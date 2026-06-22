@@ -3,14 +3,15 @@ const MODEL_URL = "https://teachablemachine.withgoogle.com/models/nhq2UTl2O/";
 // Class labels harus cocok dengan labels[] di metadata.json model Teachable Machine
 // Model: https://teachablemachine.withgoogle.com/models/nhq2UTl2O/
 // Labels: ["Hijau", "Merah", "Biru", "Kuning", "Orange", "Ungu", "Default"]
+// cvSim = simulasi warna seperti yang dilihat penderita buta warna merah-hijau (deuteranopia)
 const colorData = {
-  "Merah":   { hex: "#e63946", icon: "🔴", tips: "Mungkin tampak coklat gelap pada buta warna merah-hijau." },
-  "Orange":  { hex: "#fb5607", icon: "🟠", tips: "Bisa tampak mirip coklat atau kekuningan." },
-  "Kuning":  { hex: "#ffbe0b", icon: "🟡", tips: "Bisa tampak lebih pucat pada beberapa tipe buta warna." },
-  "Hijau":   { hex: "#2d6a4f", icon: "🟢", tips: "Warna yang sering membingungkan penderita deuteranopia." },
-  "Biru":    { hex: "#74b9ff", icon: "🔵", tips: "Terdeteksi normal oleh penderita buta warna merah-hijau." },
-  "Ungu":    { hex: "#8338ec", icon: "🟣", tips: "Masih bisa dibedakan oleh buta warna merah-hijau." },
-  "Default": { hex: "#94a3b8", icon: "⚪", tips: "Warna tidak teridentifikasi dengan jelas. Coba perbesar area fokus atau perbaiki pencahayaan." },
+  "Merah":   { hex: "#e63946", cvSim: "#787830", icon: "🔴", tips: "Di matamu mungkin tampak seperti coklat zaitun gelap. Warna aslinya adalah MERAH cerah." },
+  "Orange":  { hex: "#fb5607", cvSim: "#a07820", icon: "🟠", tips: "Di matamu mungkin tampak seperti kuning kecoklatan. Warna aslinya adalah ORANYE terang." },
+  "Kuning":  { hex: "#ffbe0b", cvSim: "#d4c020", icon: "🟡", tips: "Di matamu tampak agak mirip aslinya, tapi lebih pudar. Warna aslinya adalah KUNING cerah." },
+  "Hijau":   { hex: "#2d6a4f", cvSim: "#6a6a20", icon: "🟢", tips: "Di matamu mungkin tampak seperti coklat/zaitun gelap. Warna aslinya adalah HIJAU tua." },
+  "Biru":    { hex: "#74b9ff", cvSim: "#74b9ff", icon: "🔵", tips: "Biru terlihat SAMA di matamu! Warna ini tidak terpengaruh buta warna merah-hijau." },
+  "Ungu":    { hex: "#8338ec", cvSim: "#4848c8", icon: "🟣", tips: "Di matamu mungkin tampak lebih kebiruan. Warna aslinya adalah UNGU keunguan." },
+  "Default": { hex: "#94a3b8", cvSim: "#94a3b8", icon: "⚪", tips: "Warna tidak teridentifikasi dengan jelas. Coba perbesar area fokus atau perbaiki pencahayaan." },
 };
 
 let model      = null;
@@ -179,11 +180,13 @@ function showLowConfidenceResult(confidence) {
   resultArea.style.display     = "block";
   resultName.textContent       = "❓ Tidak dikenali";
   resultName.style.color       = "#888888";
-  resultSub.innerHTML          = `Confidence terlalu rendah (<strong>${pct}%</strong>). Coba arahkan kotak ke objek yang lebih jelas atau perbesar area fokus.`;
+  resultSub.innerHTML          = `Confidence terlalu rendah (<strong>${pct}%</strong>). Coba arahkan kotak ke objek yang lebih jelas atau perbaiki pencahayaan.`;
   colorSwatch.style.background = "#444444";
   colorSwatch.style.boxShadow  = "0 0 16px #00000033";
   confFill.style.width         = pct + "%";
   confBadge.textContent        = pct + "% ⚠️";
+  const panel = document.getElementById("compare-panel");
+  if (panel) panel.style.display = "none";
 }
 
 function updateResult(name, confidence, info) {
@@ -191,11 +194,28 @@ function updateResult(name, confidence, info) {
   resultArea.style.display     = "block";
   resultName.textContent       = `${info.icon} ${name}`;
   resultName.style.color       = info.hex;
-  resultSub.innerHTML          = `Penglihatan di mata normal adalah <strong>${name}</strong>.<br>${info.tips}`;
+  resultSub.innerHTML          = info.tips;
   colorSwatch.style.background = info.hex;
   colorSwatch.style.boxShadow  = `0 0 16px ${info.hex}33`;
   confFill.style.width         = pct + "%";
   confBadge.textContent        = pct + "%";
+
+  // ─── Panel perbandingan warna ────────────────────────────────────────────
+  const panel = document.getElementById("compare-panel");
+  if (panel) {
+    panel.style.display = "flex";
+    const normalSwatch = document.getElementById("swatch-normal");
+    const cvSwatch     = document.getElementById("swatch-cv");
+    if (normalSwatch) {
+      normalSwatch.style.background = info.hex;
+      normalSwatch.style.boxShadow  = `0 0 12px ${info.hex}66`;
+    }
+    if (cvSwatch) {
+      cvSwatch.style.background = info.cvSim || info.hex;
+      cvSwatch.style.boxShadow  = `0 0 12px ${info.cvSim || info.hex}66`;
+    }
+  }
+  // ─────────────────────────────────────────────────────────────────────────
 }
 
 function getPct(e) {

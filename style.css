@@ -226,4 +226,95 @@ footer span { color: var(--accent2); }
   .hero { padding: 36px 0 24px; }
   .controls { padding: 14px 16px; }
   .result-area { padding: 16px 16px 20px; }
+  .compare-panel { padding: 16px; }
+  .compare-swatch { width: 90px; height: 90px; }
 }
+
+/* ═══ PANEL PERBANDINGAN WARNA ═══════════════════════════════════════════ */
+.compare-panel {
+  padding: 20px 24px;
+  border-top: 1px solid var(--border);
+  background: linear-gradient(135deg, #f8faff 0%, #fff5f8 100%);
+  animation: fadeInUp 0.4s ease;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.compare-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-align: center;
+  margin-bottom: 16px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.compare-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.compare-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.compare-swatch {
+  width: 110px;
+  height: 110px;
+  border-radius: 20px;
+  border: 3px solid var(--border);
+  transition: background 0.5s ease, box-shadow 0.5s ease;
+  background: var(--surface2);
+}
+
+.compare-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.compare-tag {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  padding: 3px 12px;
+  border-radius: 100px;
+  letter-spacing: 0.3px;
+}
+
+.normal-tag {
+  background: rgba(74,122,255,0.12);
+  color: var(--accent);
+  border: 1px solid rgba(74,122,255,0.25);
+}
+
+.cv-tag {
+  background: rgba(255,77,122,0.12);
+  color: var(--accent2);
+  border: 1px solid rgba(255,77,122,0.25);
+}
+
+.compare-desc {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.compare-arrow {
+  font-size: 1.4rem;
+  color: var(--muted);
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+/* ════════════════════════════════════════════════════════════════════════ */
